@@ -27,7 +27,7 @@ app.post('/users', (request, response) => {
   }
 
   const user = {
-    id: uuidv4(),
+    id: "123",
     name,
     username,
     todos: []
@@ -42,8 +42,9 @@ app.get('/todos', checksExistsUserAccount, (request, response) => {
   const { username } = request;
 
   const getUser = users.find(user => user.username === username);
+
   const todos = getUser.todos;
-  console.log(username)
+
   return response.json(todos);
 });
 
@@ -61,8 +62,8 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
     id: uuidv4(),
     title,
     done: false, 
-    deadline, 
-    created_at: '2021-05-08T00:00:00.000Z'
+    deadline: new Date(deadline), 
+    created_at: new Date()
   }
 
   getUser.todos.push(todo);
@@ -71,7 +72,17 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params;
+  const { username } = request;
+  const { title } = request.body;
+
+  const user = users.find(user => user.username === username);
+
+  const userTodo = user.todos.find(todo => todo.id === id);
+
+  userTodo.title = title;
+
+  return response.json({todo: todo});
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
