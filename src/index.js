@@ -74,19 +74,29 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { username } = request;
-  const { title } = request.body;
+  const { title, deadline } = request.body;
 
   const user = users.find(user => user.username === username);
 
   const userTodo = user.todos.find(todo => todo.id === id);
 
   userTodo.title = title;
+  userTodo.deadline = deadline;
 
   return response.json({todo: todo});
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { username } = request;
+  const { id } = request.params;
+
+  const user = users.find(user => user.username === username);
+
+  const userTodo = user.todos.find(todo => todo.id === id);
+
+  userTodo.done = true;
+
+  return response.json({todo: todo});
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
